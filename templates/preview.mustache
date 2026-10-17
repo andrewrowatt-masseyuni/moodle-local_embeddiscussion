@@ -1,0 +1,47 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template local_embeddiscussion/preview
+
+    An embedded discussion, or the dashboard, as the editor shows it: a header naming it, over its
+    skeleton. Never live in the editor, for anyone - there is nothing to click inside it but the
+    whole, which opens the discussion's settings for a teacher who may change them.
+
+    Context variables required for this template:
+    * dashboard (bool) The course dashboard rather than a discussion.
+    * name (string) The discussion's name, formatted.
+    * anonymous (bool) Whether the discussion is anonymous.
+
+    Example context (json):
+    {
+        "dashboard": false,
+        "name": "Week 1 questions",
+        "anonymous": true
+    }
+}}
+<div class="embeddisc-preview{{#dashboard}} embeddisc-preview-dashboard{{/dashboard}}">
+  <div class="embeddisc-preview-header">
+    <span class="embeddisc-preview-icon" aria-hidden="true">{{#pix}}t/messages, core{{/pix}}</span>
+    <span class="embeddisc-preview-title">
+      {{#dashboard}}{{#str}}dashboard, local_embeddiscussion{{/str}}{{/dashboard}}
+      {{^dashboard}}{{#str}}previewtitle, local_embeddiscussion, {{name}}{{/str}}{{/dashboard}}
+    </span>
+    {{#anonymous}}<span class="badge badge-secondary embeddisc-preview-badge">{{#str}}anonymous, local_embeddiscussion{{/str}}</span>{{/anonymous}}
+  </div>
+  {{#dashboard}}{{> local_embeddiscussion/dashboard_skeleton }}{{/dashboard}}
+  {{^dashboard}}{{> local_embeddiscussion/skeleton }}{{/dashboard}}
+</div>

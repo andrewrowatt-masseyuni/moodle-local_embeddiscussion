@@ -1,0 +1,117 @@
+<?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * Strings for embedded discussions.
+ *
+ * @package    local_embeddiscussion
+ * @category   string
+ * @copyright  2026 Andrew Rowatt <A.J.Rowatt@massey.ac.nz>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+defined('MOODLE_INTERNAL') || die();
+
+$string['allposts'] = 'All posts';
+$string['anonymous'] = 'Anonymous';
+$string['anonymous_help'] = 'Students see each other under a stable two-word handle, such as "Bright Ibis", rather than their names. Teachers still see who wrote what, and post as themselves.';
+$string['anonymous_label'] = 'Students see each other under anonymous handles';
+$string['anonymousnotice'] = 'Your posts will be anonymous to other students.';
+$string['anonymousnoticemanager'] = 'Student posts will appear as anonymous to other students.';
+$string['befirsttocomment'] = 'Be the first to comment.';
+$string['cachedef_identicons'] = 'Cache definition for identicons';
+$string['cancel'] = 'Cancel';
+$string['comment'] = 'Comment';
+$string['comments'] = '{$a} Comments';
+$string['dashboard'] = 'Discussion dashboard';
+$string['dashboard_empty'] = 'No posts yet in visible discussions.';
+$string['dashboard_never'] = 'Showing all posts (this is your first visit).';
+$string['dashboard_since'] = 'Posts newer than {$a} are highlighted.';
+$string['defaultname'] = 'Discussion';
+$string['delete'] = 'Delete';
+$string['deleteconfirm'] = 'Delete this post?';
+$string['deleted_post'] = 'Post deleted.';
+$string['edit'] = 'Edit';
+$string['edited'] = 'edited';
+$string['embeddiscussion:createpost'] = 'Post in an embedded discussion';
+$string['embeddiscussion:deleteanypost'] = 'Delete any post in an embedded discussion';
+$string['embeddiscussion:deleteownpost'] = 'Delete own posts in an embedded discussion';
+$string['embeddiscussion:editownpost'] = 'Edit own posts in an embedded discussion';
+$string['embeddiscussion:embed'] = 'Add and change embedded discussions in the editor';
+$string['embeddiscussion:manageposts'] = 'Manage (delete) any post in an embedded discussion';
+$string['embeddiscussion:managethreads'] = 'View and manage all embedded discussion threads in a course';
+$string['embeddiscussion:viewallauthorsinanonymousthreads'] = 'See all real authors in anonymous embedded discussion threads';
+$string['embeddiscussion:viewallauthorsinanonymousthreads_help'] = 'Users with this capability see the real names of every author in threads marked anonymous, and their own real name is shown to other readers. Users without it see anonymised handles for other authors and appear anonymously themselves. By default this is granted to teachers, editing teachers, and managers, and not to students.';
+$string['error_emptypost'] = 'Post content cannot be empty.';
+$string['error_invalidthread'] = 'That discussion is not available.';
+$string['error_nopermission'] = 'You do not have permission to perform that action.';
+$string['event:post_created'] = 'Embedded discussion post created';
+$string['event:post_deleted'] = 'Embedded discussion post deleted';
+$string['event:post_edited'] = 'Embedded discussion post edited';
+$string['event:post_reacted'] = 'Embedded discussion post reacted to';
+$string['event:thread_created'] = 'Embedded discussion created';
+$string['event:thread_deleted'] = 'Embedded discussion thread deleted';
+$string['event:thread_updated'] = 'Embedded discussion updated';
+$string['jointhediscussion'] = 'Join the discussion…';
+$string['loadingdiscussion'] = 'Loading discussion…';
+$string['name'] = 'Name';
+$string['name_help'] = 'Names the discussion on the course\'s discussion dashboard, and in its list of discussions. It is not shown above the discussion itself.';
+$string['newest'] = 'Newest';
+$string['nocomments'] = '0 Comments';
+$string['notfound'] = 'A discussion was embedded here, but it belongs to another activity or section, or has been removed. Edit the text to embed a discussion again.';
+$string['nothreads'] = 'No embedded discussions in this course.';
+$string['oldest'] = 'Oldest';
+$string['onecomment'] = '1 Comment';
+$string['pluginname'] = 'Embedded discussion';
+$string['post'] = 'Post';
+$string['previewtitle'] = 'Discussion: {$a}';
+$string['privacy:metadata'] = 'Embedded discussions store users\' posts, reactions and anonymous handles.';
+$string['privacy:metadata:handle'] = 'The anonymous handle assigned to a student in a thread.';
+$string['privacy:metadata:handle:handleindex'] = 'The handle index in the master list.';
+$string['privacy:metadata:handle:userid'] = 'The user assigned the handle.';
+$string['privacy:metadata:post'] = 'Posts made by users in embedded discussion threads.';
+$string['privacy:metadata:post:content'] = 'The HTML content of the post.';
+$string['privacy:metadata:post:timecreated'] = 'When the post was created.';
+$string['privacy:metadata:post:timemodified'] = 'When the post was last edited.';
+$string['privacy:metadata:post:userid'] = 'The user who created the post.';
+$string['privacy:metadata:reaction'] = 'Emoji reactions on posts.';
+$string['privacy:metadata:reaction:emoji'] = 'The emoji shortcode the user reacted with.';
+$string['privacy:metadata:reaction:timecreated'] = 'When the reaction was made.';
+$string['privacy:metadata:reaction:userid'] = 'The reacting user.';
+$string['rateandcomment'] = 'Rate and comment';
+$string['reacttothispost'] = 'React to this post';
+$string['relativetime'] = '{$a} ago';
+$string['reply'] = 'Reply';
+$string['replytopost'] = 'Reply to post';
+$string['save'] = 'Save';
+$string['setting_adjectives'] = 'Adjective (word one)';
+$string['setting_adjectives_default'] = 'Bright,Calm,Keen,Bold,Clear';
+$string['setting_adjectives_desc'] = 'Comma-separated list of adjectives used as the first word of an anonymous handle.';
+$string['setting_animals'] = 'Animal (word two)';
+$string['setting_animals_default'] = 'Ibis,Kestrel,Heron,Lynx,Merlin';
+$string['setting_animals_desc'] = 'Comma-separated list of animals used as the second word of an anonymous handle.';
+$string['setting_emojis'] = 'Emoji set';
+$string['setting_emojis_desc'] = 'Comma-separated list of shortcode:emoji pairs offered as reactions on posts. For example: thumbsup:👍,heart:❤️,laugh:😂';
+$string['settings_handles'] = 'Anonymous handles';
+$string['startthediscussion'] = 'Start the discussion…';
+$string['task:purgedrafts'] = 'Delete abandoned embedded discussion drafts';
+$string['threadcontext'] = 'Location';
+$string['threadlastpost'] = 'Last post';
+$string['threadname'] = 'Thread';
+$string['threadposts'] = 'Posts';
+$string['threadsincourse'] = 'Embedded discussions';
+$string['totalreactions'] = 'Total reactions';
+$string['viewthread'] = 'View';
