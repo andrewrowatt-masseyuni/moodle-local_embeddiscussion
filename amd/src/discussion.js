@@ -33,8 +33,6 @@ const SEL_ROOT = '[data-region="filter-embeddiscussion"]';
 const MAX_VISUAL_INDENT = 3;
 // Start fetching when the placeholder is within ~one viewport of the scroll position.
 const LAZY_ROOT_MARGIN = '100px 0px';
-// Hash format used by the dashboard to deep-link to a specific post. Captures the post id.
-const HASH_POST_RE = /^#embeddisc-post-(\d+)$/;
 
 const initialised = new WeakSet();
 
@@ -76,25 +74,12 @@ const getLazyObserver = () => {
 };
 
 /**
- * If the URL points at a specific post via #embeddisc-post-N, return that id;
- * otherwise null. Used to bypass the lazy-load wait so the targeted post
- * scrolls into view immediately.
- *
- * @returns {?number}
- */
-const targetedPostId = () => {
-    const match = HASH_POST_RE.exec(window.location.hash || '');
-    return match ? parseInt(match[1], 10) : null;
-};
-
-/**
  * Public entry point. Bootstraps every embedded discussion placeholder on the page,
  * deferring the thread fetch until each placeholder is near the viewport.
  */
 export const init = () => {
     bindPickerCloser();
-    const targeted = targetedPostId();
-    const observer = targeted === null ? getLazyObserver() : null;
+    const observer = getLazyObserver();
     document.querySelectorAll(SEL_ROOT).forEach(el => {
         if (initialised.has(el)) {
             return;
@@ -103,13 +88,8 @@ export const init = () => {
         if (observer) {
             observer.observe(el);
         } else {
-            // Either the browser lacks IntersectionObserver, or the URL points at
-            // a specific post — eager-load so the anchor target renders immediately.
-            const d = new Discussion(el);
-            if (targeted !== null) {
-                d.scrollToPostId = targeted;
-            }
-            d.load();
+            // The browser lacks IntersectionObserver: load straight away.
+            new Discussion(el).load();
         }
     });
     startTicker();
@@ -125,7 +105,6 @@ class Discussion {
         this.composerEditor = null;
         this.activeReply = null; // {parentId, container, editor}.
         this.activeEdit = null; // {postId, container, editor, originalContent}.
-        this.scrollToPostId = null; // Set by init() when the URL hash targets a post.
     }
 
     load() {
@@ -148,12 +127,6 @@ class Discussion {
         await Templates.replaceNodeContents(this.root, html.html, html.js);
         await this.renderPosts();
         this.bind();
-        if (this.scrollToPostId !== null) {
-            const target = this.root.querySelector(`[data-postid="${this.scrollToPostId}"]`);
-            if (target) {
-                target.scrollIntoView({behavior: 'smooth', block: 'start'});
-            }
-        }
     }
 
     /**

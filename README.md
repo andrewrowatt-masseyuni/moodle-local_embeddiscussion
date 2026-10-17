@@ -7,8 +7,6 @@ react to comments without leaving the page.
 * Optional **anonymous** mode, where students see each other under stable two-word handles (for
   example "Bright Ibis") while teachers still see real names.
 * Emoji reactions on posts, configured site-wide.
-* A **discussion dashboard** that gathers recent posts from every discussion a user can see in the
-  course, with the ones since their last visit highlighted.
 * A course-level list of every embedded discussion, for teachers.
 
 A teacher adds a discussion from the editor's toolbar, and changes it there later.
@@ -20,7 +18,7 @@ because Moodle has three extension points they need and each belongs to a differ
 
 | Plugin | Why it has to be its own plugin |
 | --- | --- |
-| `local_embeddiscussion` (this one) | Everything else - storage, posts, reactions, anonymity, rendering, the dashboard, backup. It is a *local* plugin because core only lets `format`, `report`, `plagiarism`, `local` and `tool` plugins add data to another module's backup (`backup/moodle2/backup_stepslib.php`), and a discussion has to follow its activity through backup, restore, duplicate, course copy and the recycle bin. |
+| `local_embeddiscussion` (this one) | Everything else - storage, posts, reactions, anonymity, rendering, backup. It is a *local* plugin because core only lets `format`, `report`, `plagiarism`, `local` and `tool` plugins add data to another module's backup (`backup/moodle2/backup_stepslib.php`), and a discussion has to follow its activity through backup, restore, duplicate, course copy and the recycle bin. |
 | `filter_embeddiscussion` | Turns an embedded token into the discussion. Only a filter sees every piece of formatted text. |
 | `tiny_embeddiscussion` | The TinyMCE button teachers use to embed discussions and change them. |
 
@@ -58,12 +56,9 @@ Settings: *Site administration > Plugins > Local plugins > Embedded discussion*.
 
 In a book chapter, a page, a label, an activity description, a lesson page or a section summary
 (**Edit section**), use the **Embedded discussion** button on the editor toolbar (also under
-**Insert**):
-
-* **Embed a discussion** - opens a short form: the discussion's **Name**, offered as the activity's
-  or section's name, and whether it is **Anonymous**. Saving puts the discussion where the cursor is.
-* **Embed the discussion dashboard** - puts the course's dashboard where the cursor is. It has no
-  settings.
+**Insert**) and choose **Embed a discussion**. It opens a short form: the discussion's **Name**,
+offered as the activity's or section's name, and whether it is **Anonymous**. Saving puts the
+discussion where the cursor is.
 
 In the editor a discussion shows as its name over a still skeleton of the discussion - never the live
 discussion, for anyone. Click it (or choose **Change this discussion** with the cursor on it) to
@@ -75,7 +70,7 @@ Removing a discussion from the text - from its form, or by deleting it as you wo
 - keeps its posts, but they are no longer shown there. Undo brings it straight back until the text is
 saved.
 
-The name is shown on the dashboard and in the course's list of discussions, not above the discussion
+The name is shown in the editor and in the course's list of discussions, not above the discussion
 itself.
 
 ### Where it works
@@ -110,8 +105,7 @@ What goes into the text is an empty element:
 <div class="embeddiscussion-embed" data-embeddiscussion="0123456789abcdef"></div>
 ```
 
-The key is 16 random hex characters, naming a row in `local_embeddiscussion_thread`. The dashboard's
-token has the key `dashboard`. **A token carries nothing else** - not the discussion's name, not
+The key is 16 random hex characters, naming a row in `local_embeddiscussion_thread`. **A token carries nothing else** - not the discussion's name, not
 whether it is anonymous. Those are the thread's, set from the editor's form, so they are changed in
 one place, and copying or editing the text can never quietly change them.
 
@@ -180,7 +174,7 @@ to match. Restore holds claims off while each section step runs (see *Backup and
 `tiny_embeddiscussion` shows each token as a header naming the discussion over the same skeleton the
 page shows while a discussion loads, rendered by `output\embed::render_preview()` and fetched for
 every token in the text at once from `local_embeddiscussion_get_previews`. A preview says no more than
-the dashboard shows anyone in the course; a draft's needs `embed`.
+the discussion itself tells anyone who can see it; a draft's needs `embed`.
 
 The preview is never put inside the token: the filter matches a token only up to its first `</div>`,
 so anything inside would be left showing on the page. It goes in a **shadow root** attached to the

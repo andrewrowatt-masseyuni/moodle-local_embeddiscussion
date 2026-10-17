@@ -34,7 +34,7 @@ use local_embeddiscussion\output\embed;
  * api::get_embeds() - so a token copied in from elsewhere previews as the notice the filter will
  * show there, and a draft on the "add an activity" form previews at all.
  *
- * A preview says no more than the dashboard shows anyone in the course: the discussion's name, and
+ * A preview says no more than the discussion itself tells anyone who can see it: its name, and
  * whether it is anonymous. Drafts are the exception, and need the embed capability: they are only
  * ever seen by whoever is writing them.
  *
@@ -52,7 +52,7 @@ class get_previews extends external_api {
         return new external_function_parameters([
             'contextid' => new external_value(PARAM_INT, 'The context of the editor the tokens are in'),
             'keys' => new external_multiple_structure(
-                new external_value(PARAM_ALPHANUM, 'A token\'s key: a thread\'s, or "dashboard"')
+                new external_value(PARAM_ALPHANUM, 'A thread\'s key, from its token')
             ),
             'sectionid' => new external_value(
                 PARAM_INT,
@@ -91,7 +91,7 @@ class get_previews extends external_api {
         foreach ($keys as $key) {
             $previews[] = [
                 'key' => $key,
-                'html' => embed::render_preview($key, $rows[$key] ?? null),
+                'html' => embed::render_preview($rows[$key] ?? null),
             ];
         }
 

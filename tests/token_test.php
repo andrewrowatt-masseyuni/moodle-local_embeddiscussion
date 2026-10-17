@@ -42,13 +42,12 @@ final class token_test extends \advanced_testcase {
 
     /**
      * Keys are found however TinyMCE wrote the token - padded, attributes reordered, single quotes -
-     * in order and once each. The dashboard is not a thread, and is left out.
+     * in order and once each.
      */
     public function test_keys_in(): void {
         $text = '<p>Intro</p>' .
             '<div class="embeddiscussion-embed" data-embeddiscussion="0123456789abcdef">&nbsp;</div>' .
             "<div data-embeddiscussion='fedcba9876543210' contenteditable=\"false\" class=\"embeddiscussion-embed\"></div>" .
-            token::html(token::DASHBOARD) .
             token::html('0123456789abcdef');
 
         $this->assertSame(['0123456789abcdef', 'fedcba9876543210'], token::keys_in($text));
@@ -60,15 +59,15 @@ final class token_test extends \advanced_testcase {
     }
 
     /**
-     * Each whole token is replaced - the dashboard's too - and the text around it is left alone.
+     * Each whole token is replaced, and the text around it is left alone.
      */
     public function test_replace(): void {
         $text = '<p>Before</p>' . token::html('0123456789abcdef') . '<p>Middle</p>' .
-            token::html(token::DASHBOARD) . '<p>After</p>';
+            token::html('fedcba9876543210') . '<p>After</p>';
 
         $replaced = token::replace($text, fn(string $key) => "[{$key}]");
 
-        $this->assertSame('<p>Before</p>[0123456789abcdef]<p>Middle</p>[dashboard]<p>After</p>', $replaced);
+        $this->assertSame('<p>Before</p>[0123456789abcdef]<p>Middle</p>[fedcba9876543210]<p>After</p>', $replaced);
         $this->assertSame('<p>No tokens</p>', token::replace('<p>No tokens</p>', fn() => 'X'));
     }
 

@@ -66,13 +66,6 @@ $functions = [
         'loginrequired' => true,
         'capabilities' => 'local/embeddiscussion:createpost',
     ],
-    'local_embeddiscussion_get_dashboard' => [
-        'classname' => 'local_embeddiscussion\external\get_dashboard',
-        'description' => 'List embedded discussion posts in a course (latest first) with unread markers.',
-        'type' => 'read',
-        'ajax' => true,
-        'loginrequired' => true,
-    ],
     'local_embeddiscussion_get_previews' => [
         'classname' => 'local_embeddiscussion\external\get_previews',
         'description' => 'Render embedded discussion tokens as the editor previews them.',

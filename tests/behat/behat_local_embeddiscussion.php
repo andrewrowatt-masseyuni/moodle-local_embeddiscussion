@@ -38,52 +38,6 @@ class behat_local_embeddiscussion extends behat_base {
     }
 
     /**
-     * Wait until the dashboard JS has replaced the placeholder skeleton with
-     * the live dashboard content.
-     *
-     * @Given /^the embedded discussion dashboard is loaded$/
-     */
-    public function the_embedded_discussion_dashboard_is_loaded(): void {
-        $this->wait_for_pending_js();
-        $this->ensure_element_exists(
-            "[data-region='filter-embeddiscussion-dashboard'] .embeddisc-dashboard:not(.embeddisc-skeleton)",
-            'css_element'
-        );
-    }
-
-    /**
-     * Backdate (or insert) a user's last-access timestamp for a course. Used
-     * to simulate "the user last visited N seconds ago" for dashboard tests.
-     * The cutoff must stay under LASTACCESS_UPDATE_SECS (60) so the visit that
-     * triggers the test doesn't bump it forward.
-     *
-     * @Given /^user "(?P<username>[^"]+)" last accessed course "(?P<shortname>[^"]+)" "(?P<seconds>\d+)" seconds ago$/
-     * @param string $username
-     * @param string $shortname course shortname
-     * @param string $seconds
-     */
-    public function user_last_accessed_course_seconds_ago(
-        string $username,
-        string $shortname,
-        string $seconds
-    ): void {
-        global $DB;
-        $userid = $DB->get_field('user', 'id', ['username' => $username], MUST_EXIST);
-        $courseid = $DB->get_field('course', 'id', ['shortname' => $shortname], MUST_EXIST);
-        $time = time() - (int)$seconds;
-        $existing = $DB->get_record('user_lastaccess', ['userid' => $userid, 'courseid' => $courseid]);
-        if ($existing) {
-            $DB->set_field('user_lastaccess', 'timeaccess', $time, ['id' => $existing->id]);
-        } else {
-            $DB->insert_record('user_lastaccess', (object)[
-                'userid' => $userid,
-                'courseid' => $courseid,
-                'timeaccess' => $time,
-            ]);
-        }
-    }
-
-    /**
      * Compose and submit a top-level comment in the embedded discussion.
      *
      * Opens the collapsed composer, types the content into the Quill editor and

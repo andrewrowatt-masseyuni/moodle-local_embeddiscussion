@@ -17,31 +17,25 @@
 {{!
     @template local_embeddiscussion/preview
 
-    An embedded discussion, or the dashboard, as the editor shows it: a header naming it, over its
-    skeleton. Never live in the editor, for anyone - there is nothing to click inside it but the
-    whole, which opens the discussion's settings for a teacher who may change them.
+    An embedded discussion as the editor shows it: a header naming it, over its skeleton. Never live
+    in the editor, for anyone - there is nothing to click inside it but the whole, which opens the
+    discussion's settings for a teacher who may change them.
 
     Context variables required for this template:
-    * dashboard (bool) The course dashboard rather than a discussion.
     * name (string) The discussion's name, formatted.
     * anonymous (bool) Whether the discussion is anonymous.
 
     Example context (json):
     {
-        "dashboard": false,
         "name": "Week 1 questions",
         "anonymous": true
     }
 }}
-<div class="embeddisc-preview{{#dashboard}} embeddisc-preview-dashboard{{/dashboard}}">
+<div class="embeddisc-preview">
   <div class="embeddisc-preview-header">
     <span class="embeddisc-preview-icon" aria-hidden="true">{{#pix}}t/messages, core{{/pix}}</span>
-    <span class="embeddisc-preview-title">
-      {{#dashboard}}{{#str}}dashboard, local_embeddiscussion{{/str}}{{/dashboard}}
-      {{^dashboard}}{{#str}}previewtitle, local_embeddiscussion, {{name}}{{/str}}{{/dashboard}}
-    </span>
+    <span class="embeddisc-preview-title">{{#str}}previewtitle, local_embeddiscussion, {{name}}{{/str}}</span>
     {{#anonymous}}<span class="badge badge-secondary embeddisc-preview-badge">{{#str}}anonymous, local_embeddiscussion{{/str}}</span>{{/anonymous}}
   </div>
-  {{#dashboard}}{{> local_embeddiscussion/dashboard_skeleton }}{{/dashboard}}
-  {{^dashboard}}{{> local_embeddiscussion/skeleton }}{{/dashboard}}
+  {{> local_embeddiscussion/skeleton }}
 </div>

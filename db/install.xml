@@ -12,7 +12,7 @@
         <FIELD NAME="sectionid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="The course section whose summary carries the token, with cmid 0. 0 for an activity's thread or a draft."/>
         <FIELD NAME="contextid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The thread's context: its activity's, or its course's for a section's thread or a draft. Follows cmid and courseid; kept for the privacy, event and deletion paths that work by context."/>
         <FIELD NAME="embedkey" TYPE="char" LENGTH="16" NOTNULL="true" SEQUENCE="false" COMMENT="Random hex matching the token's data-embeddiscussion attribute. Unique per activity, and per course among sections and drafts."/>
-        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Plain-text name, shown on the dashboard and the course's list of discussions."/>
+        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Plain-text name, shown in the editor and the course's list of discussions."/>
         <FIELD NAME="anonymous" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="1 = students see each other under anonymous handles"/>
         <FIELD NAME="handleoffset" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Random offset into the handle master list"/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>

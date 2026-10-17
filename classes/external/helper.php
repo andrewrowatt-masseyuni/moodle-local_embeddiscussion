@@ -97,57 +97,6 @@ class helper {
     }
 
     /**
-     * Description of a single dashboard post entry. Read-only subset of
-     * post_structure with a navigation URL added; no reactions/edit/delete.
-     *
-     * @return external_single_structure
-     */
-    public static function dashboard_post_structure(): external_single_structure {
-        return new external_single_structure([
-            'id' => new external_value(PARAM_INT, 'Post id'),
-            'threadid' => new external_value(PARAM_INT, 'Thread id'),
-            'threadname' => new external_value(PARAM_TEXT, 'Thread name'),
-            'content' => new external_value(PARAM_RAW, 'Sanitised HTML content'),
-            'deleted' => new external_value(PARAM_BOOL, 'Whether the post is deleted'),
-            'edited' => new external_value(PARAM_BOOL, 'Whether the post has been edited'),
-            'timecreated' => new external_value(PARAM_INT, 'Unix timestamp when created'),
-            'timecreatediso' => new external_value(PARAM_TEXT, 'Localised date/time'),
-            'isunread' => new external_value(PARAM_BOOL, 'True when the post is newer than last course access'),
-            'authorname' => new external_value(PARAM_TEXT, 'Display name of author'),
-            'authorhandle' => new external_value(PARAM_TEXT, 'Anonymous handle, if any'),
-            'authorrole' => new external_value(PARAM_TEXT, 'Author role label, if non-student'),
-            'isanonymous' => new external_value(PARAM_BOOL, 'True if anonymised for viewer'),
-            'profileurl' => new external_value(PARAM_URL, 'Author profile URL', VALUE_OPTIONAL),
-            'avatar' => new external_value(PARAM_RAW, 'Avatar HTML (img tag)'),
-            'posturl' => new external_value(PARAM_RAW, 'URL pointing at the post in its host page'),
-        ]);
-    }
-
-    /**
-     * Description of the dashboard payload.
-     *
-     * @return external_single_structure
-     */
-    public static function dashboard_structure(): external_single_structure {
-        return new external_single_structure([
-            'lastaccess' => new external_value(PARAM_INT, 'Unix timestamp of last course access'),
-            'lastaccessiso' => new external_value(PARAM_TEXT, 'Localised date/time of last access'),
-            'lastaccessrelative' => new external_value(PARAM_TEXT, 'Relative time of last access'),
-            'hasitems' => new external_value(PARAM_BOOL, 'True if there is at least one visible post'),
-            'neverbefore' => new external_value(PARAM_BOOL, 'True if this is the first course visit'),
-            'threadcount' => new external_value(PARAM_INT, 'Number of visible threads with posts'),
-            'postcount' => new external_value(PARAM_INT, 'Total number of visible posts'),
-            'threads' => new external_multiple_structure(new external_single_structure([
-                'threadid' => new external_value(PARAM_INT, 'Thread id'),
-                'name' => new external_value(PARAM_TEXT, 'Thread name'),
-                'postcount' => new external_value(PARAM_INT, 'Visible posts in this thread'),
-                'posts' => new external_multiple_structure(self::dashboard_post_structure()),
-            ])),
-            'posts' => new external_multiple_structure(self::dashboard_post_structure()),
-        ]);
-    }
-
-    /**
      * Description of a thread payload.
      *
      * @return external_single_structure

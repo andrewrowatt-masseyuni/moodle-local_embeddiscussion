@@ -76,8 +76,8 @@ final class external_test extends \externallib_advanced_testcase {
     }
 
     /**
-     * Each token previews as its discussion's name over a skeleton - or the dashboard's skeleton -
-     * and never as anything live. A token with no thread here previews as the page's notice.
+     * Each token previews as its discussion's name over a skeleton, and never as anything live. A
+     * token with no thread here previews as the page's notice.
      */
     public function test_get_previews(): void {
         $course = $this->getDataGenerator()->create_course();
@@ -89,21 +89,16 @@ final class external_test extends \externallib_advanced_testcase {
 
         $previews = $this->previews(\context_module::instance($page->cmid), [
             $thread->embedkey,
-            token::DASHBOARD,
             $elsewhere->embedkey,
             $thread->embedkey,
         ]);
 
-        $this->assertCount(3, $previews);
+        $this->assertCount(2, $previews);
         $this->assertStringContainsString('Discussion: Q&amp;A &quot;week 1&quot;', $previews[$thread->embedkey]);
         $this->assertStringContainsString('Anonymous', $previews[$thread->embedkey]);
         $this->assertStringContainsString('embeddisc-skeleton', $previews[$thread->embedkey]);
         $this->assertStringNotContainsString('data-threadid', $previews[$thread->embedkey]);
         $this->assertStringNotContainsString('data-region="filter-embeddiscussion"', $previews[$thread->embedkey]);
-
-        $this->assertStringContainsString('Discussion dashboard', $previews[token::DASHBOARD]);
-        $this->assertStringContainsString('embeddisc-dashboard embeddisc-skeleton', $previews[token::DASHBOARD]);
-        $this->assertStringNotContainsString('data-courseid', $previews[token::DASHBOARD]);
 
         $this->assertStringContainsString('embeddisc-notfound', $previews[$elsewhere->embedkey]);
         $this->assertStringNotContainsString('Elsewhere', $previews[$elsewhere->embedkey]);

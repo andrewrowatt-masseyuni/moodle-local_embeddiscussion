@@ -25,9 +25,6 @@ namespace local_embeddiscussion;
  * one place and copying the text can never quietly change them. Where the filter does not run, the
  * token renders as nothing (styles.css hides it, since TinyMCE pads an empty div with &nbsp;).
  *
- * The key is 16 hex characters, or the word "dashboard" for the course's discussion dashboard, which
- * has no thread and no settings of its own.
- *
  * @package    local_embeddiscussion
  * @copyright  2026 Andrew Rowatt <A.J.Rowatt@massey.ac.nz>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -36,9 +33,6 @@ class token {
     /** @var string The attribute carrying the key. Also the cheap pre-check before any regex runs. */
     public const ATTRIBUTE = 'data-embeddiscussion';
 
-    /** @var string The key of the course dashboard's token. */
-    public const DASHBOARD = 'dashboard';
-
     /**
      * @var string Matches one whole token element, capturing the key.
      *
@@ -46,7 +40,7 @@ class token {
      * empty div with &nbsp; and may reorder attributes when it serialises. The content is matched
      * lazily up to the first closing div: a token never contains markup of its own.
      */
-    public const PATTERN = '~<div\b[^>]*\bdata-embeddiscussion\s*=\s*["\']([0-9a-f]{16}|dashboard)["\'][^>]*>.*?</div>~is';
+    public const PATTERN = '~<div\b[^>]*\bdata-embeddiscussion\s*=\s*["\']([0-9a-f]{16})["\'][^>]*>.*?</div>~is';
 
     /**
      * A fresh key.
@@ -60,7 +54,7 @@ class token {
     /**
      * The token element for a key.
      *
-     * @param string $key The thread's key, or self::DASHBOARD.
+     * @param string $key The thread's key.
      * @return string
      */
     public static function html(string $key): string {
@@ -78,8 +72,7 @@ class token {
     }
 
     /**
-     * The thread keys in a piece of text, in the order they appear, each once. The dashboard is not
-     * a thread, and is left out.
+     * The keys in a piece of text, in the order they appear, each once.
      *
      * @param string|null $text The text.
      * @return string[]
@@ -91,7 +84,7 @@ class token {
 
         preg_match_all(self::PATTERN, $text, $matches);
 
-        return array_values(array_diff(array_unique($matches[1]), [self::DASHBOARD]));
+        return array_values(array_unique($matches[1]));
     }
 
     /**

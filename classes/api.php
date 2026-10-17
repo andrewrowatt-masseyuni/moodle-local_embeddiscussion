@@ -98,7 +98,6 @@ class api {
 
         // Before anything else, so that a context no thread can belong to throws even with no keys.
         [$courseid, $cmid, $sectionid] = self::embed_target($context, $sectionid);
-        $keys = array_values(array_diff($keys, [token::DASHBOARD]));
         if (!$keys) {
             return [];
         }
