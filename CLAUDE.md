@@ -142,6 +142,10 @@ anonymous) live on that row, never in the text. The token format is defined in t
   `api::hold_claims()`.
 - **Text holding tokens must be displayed with `noclean`.** HTMLPurifier strips `data-*`
   attributes. Post content itself is rendered with `'filter' => false`.
+- **Backup element names start with `embeddiscussion_`.** Every local plugin's backup elements share
+  one optigroup, which throws `multiple_optigroup_duplicate_element` on a name any other local
+  plugin also uses (`local_reactions` has `reactions`), and the whole backup fails. The tests here
+  only catch it on a site that has the other plugin.
 - **Web services take a `threadid` from the client.** Each one loads the thread with
   `external\helper::get_thread()`, which refuses drafts. It then derives the context from the thread's
   `contextid`, never from the client.

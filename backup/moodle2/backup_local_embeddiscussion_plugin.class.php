@@ -69,17 +69,20 @@ class backup_local_embeddiscussion_plugin extends backup_local_plugin {
         $plugin = $this->get_plugin_element();
         $userinfo = $this->get_setting_value('userinfo');
 
+        // Every local plugin's elements hang off one optigroup, which refuses a name used twice - even
+        // one nested under another plugin's wrapper. Unprefixed names would clash with local_reactions'
+        // 'reactions', and the whole backup would fail.
         $wrapper = new backup_nested_element($this->get_recommended_name());
-        $threads = new backup_nested_element('threads');
-        $thread = new backup_nested_element('thread', ['id'], [
+        $threads = new backup_nested_element('embeddiscussion_threads');
+        $thread = new backup_nested_element('embeddiscussion_thread', ['id'], [
             'embedkey',
             'anonymous',
             'handleoffset',
             'timecreated',
             'timemodified',
         ]);
-        $posts = new backup_nested_element('posts');
-        $post = new backup_nested_element('post', ['id'], [
+        $posts = new backup_nested_element('embeddiscussion_posts');
+        $post = new backup_nested_element('embeddiscussion_post', ['id'], [
             'parentid',
             'userid',
             'content',
@@ -88,14 +91,14 @@ class backup_local_embeddiscussion_plugin extends backup_local_plugin {
             'timecreated',
             'timemodified',
         ]);
-        $reactions = new backup_nested_element('reactions');
-        $reaction = new backup_nested_element('reaction', ['id'], [
+        $reactions = new backup_nested_element('embeddiscussion_reactions');
+        $reaction = new backup_nested_element('embeddiscussion_reaction', ['id'], [
             'userid',
             'emoji',
             'timecreated',
         ]);
-        $handles = new backup_nested_element('handles');
-        $handle = new backup_nested_element('handle', ['id'], [
+        $handles = new backup_nested_element('embeddiscussion_handles');
+        $handle = new backup_nested_element('embeddiscussion_handle', ['id'], [
             'userid',
             'handleindex',
             'timecreated',

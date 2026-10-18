@@ -74,17 +74,23 @@ class restore_local_embeddiscussion_plugin extends restore_local_plugin {
      * @return restore_path_element[]
      */
     protected function define_paths(): array {
+        $thread = '/embeddiscussion_threads/embeddiscussion_thread';
+        $post = $thread . '/embeddiscussion_posts/embeddiscussion_post';
+
         $paths = [
-            new restore_path_element($this->get_namefor('thread'), $this->get_pathfor('/threads/thread')),
+            new restore_path_element($this->get_namefor('thread'), $this->get_pathfor($thread)),
         ];
 
         if ($this->get_setting_value('userinfo')) {
-            $paths[] = new restore_path_element($this->get_namefor('post'), $this->get_pathfor('/threads/thread/posts/post'));
+            $paths[] = new restore_path_element($this->get_namefor('post'), $this->get_pathfor($post));
             $paths[] = new restore_path_element(
                 $this->get_namefor('reaction'),
-                $this->get_pathfor('/threads/thread/posts/post/reactions/reaction')
+                $this->get_pathfor($post . '/embeddiscussion_reactions/embeddiscussion_reaction')
             );
-            $paths[] = new restore_path_element($this->get_namefor('handle'), $this->get_pathfor('/threads/thread/handles/handle'));
+            $paths[] = new restore_path_element(
+                $this->get_namefor('handle'),
+                $this->get_pathfor($thread . '/embeddiscussion_handles/embeddiscussion_handle')
+            );
         }
 
         return $paths;
