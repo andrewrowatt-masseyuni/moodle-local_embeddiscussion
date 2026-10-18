@@ -25,11 +25,11 @@ Feature: Reacting to embedded discussion posts
       | book      | title     | content | contentformat |
       | Discuss A | Chapter 1 | <p>Chapter text.</p><div class="embeddiscussion-embed" data-embeddiscussion="0123456789abcde3"></div> | 1 |
     And the following "local_embeddiscussion > threads" exist:
-      | activity | name | embedkey |
-      | book1 | Reactions demo | 0123456789abcde3 |
+      | activity | embedkey         |
+      | book1    | 0123456789abcde3 |
     And the following "local_embeddiscussion > posts" exist:
-      | thread         | user     | content                                  |
-      | Reactions demo | student1 | First post by student one for reactions  |
+      | thread           | user     | content                                  |
+      | 0123456789abcde3 | student1 | First post by student one for reactions  |
 
     And I change the window size to "large"
 

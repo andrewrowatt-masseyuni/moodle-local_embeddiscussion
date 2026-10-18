@@ -34,8 +34,8 @@ use local_embeddiscussion\output\embed;
  * api::get_embeds() - so a token copied in from elsewhere previews as the notice the filter will
  * show there, and a draft on the "add an activity" form previews at all.
  *
- * A preview says no more than the discussion itself tells anyone who can see it: its name, and
- * whether it is anonymous. Drafts are the exception, and need the embed capability: they are only
+ * A preview says no more than the discussion itself tells anyone who can see it: whether it is
+ * anonymous. Drafts are the exception, and need the embed capability: they are only
  * ever seen by whoever is writing them.
  *
  * @package    local_embeddiscussion

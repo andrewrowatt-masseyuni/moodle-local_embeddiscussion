@@ -473,11 +473,6 @@ div.embeddiscussion-embed[data-embeddiscussion] {
     padding-top: 0.5rem;
 }
 
-/* --- Threads list page --------------------------------------------------- */
-.embeddisc-threads-table th {
-    background: #f6f7f9;
-}
-
 /* --- The editor's preview of a discussion ---------------------------------- */
 .embeddisc-preview {
     margin: 0.5rem 0;
@@ -492,7 +487,7 @@ div.embeddiscussion-embed[data-embeddiscussion] {
     gap: 0.5rem;
     margin-bottom: 0.5rem;
     color: #343a40;
-    font-weight: 600;
+    font-weight: 500;
 }
 .embeddisc-preview-icon .icon {
     margin-right: 0;

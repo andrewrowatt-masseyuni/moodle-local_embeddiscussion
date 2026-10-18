@@ -119,33 +119,6 @@ class api {
     }
 
     /**
-     * The name a new thread is offered in this editor: its activity's, or its section's.
-     *
-     * Nothing on the "add an activity" form, where the activity has no name yet.
-     *
-     * @param \context $context The editor's context.
-     * @param int $sectionid The section whose summary is being edited, or 0.
-     * @return string Plain text.
-     */
-    public static function default_name(\context $context, int $sectionid = 0): string {
-        global $CFG;
-        require_once($CFG->dirroot . '/course/lib.php');
-
-        [$courseid, $cmid, $sectionid] = self::embed_target($context, $sectionid);
-
-        $modinfo = get_fast_modinfo($courseid);
-        if ($cmid) {
-            $name = $modinfo->get_cm($cmid)->name;
-        } else if ($sectionid) {
-            $name = get_section_name($courseid, $modinfo->get_section_info_by_id($sectionid, MUST_EXIST));
-        } else {
-            return '';
-        }
-
-        return format_string($name, true, ['context' => $context, 'escape' => false]);
-    }
-
-    /**
      * Create or update a thread.
      *
      * A key that does not match a thread in this context - a token pasted in from another activity,
@@ -158,28 +131,15 @@ class api {
      *
      * @param \context $context The editor's context.
      * @param string|null $key The thread to update, or null for a new one.
-     * @param string $name Plain text. An empty name takes default_name().
      * @param bool $anonymous Whether students see each other under anonymous handles.
      * @param int $sectionid The section whose summary is being edited, or 0.
      * @return string The thread's key.
      */
-    public static function save_embed(
-        \context $context,
-        ?string $key,
-        string $name,
-        bool $anonymous,
-        int $sectionid = 0
-    ): string {
+    public static function save_embed(\context $context, ?string $key, bool $anonymous, int $sectionid = 0): string {
         global $DB;
 
         [$courseid, $cmid, $sectionid] = self::embed_target($context, $sectionid);
         $now = time();
-
-        $name = trim($name);
-        if ($name === '') {
-            $name = self::default_name($context, $sectionid) ?: get_string('defaultname', 'local_embeddiscussion');
-        }
-        $name = \core_text::substr($name, 0, 255);
 
         $row = ($key !== null && $key !== '') ? self::get_embed($context, $key, $sectionid) : null;
         if (!$row) {
@@ -189,7 +149,6 @@ class api {
                 'sectionid' => $sectionid,
                 'contextid' => $context->id,
                 'embedkey' => token::new_key(),
-                'name' => $name,
                 'anonymous' => (int)$anonymous,
                 'handleoffset' => random_int(0, max(count(handles::master_list()), 1) - 1),
                 'timecreated' => $now,
@@ -202,7 +161,6 @@ class api {
             return $row->embedkey;
         }
 
-        $row->name = $name;
         $row->anonymous = (int)$anonymous;
         $row->timemodified = $now;
         $DB->update_record(threads::TABLE, $row);
@@ -272,7 +230,7 @@ class api {
      * (course_format::duplicate_section() - there is no hook), and a teacher can paste one section's
      * token into another. Either way two summaries would share one thread: the filter cannot tell them
      * apart, and deleting either section would take the other's discussion with it. So the copy gets
-     * a thread of its own - same name, same anonymity, no posts - under a new key, and its summary is
+     * a thread of its own - same anonymity, no posts - under a new key, and its summary is
      * rewritten to match, as duplicating an activity would.
      *
      * Tokens whose thread is not a section's in this course are left alone: they resolve to nothing,

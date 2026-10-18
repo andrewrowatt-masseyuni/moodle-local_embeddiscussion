@@ -43,7 +43,7 @@ class behat_local_embeddiscussion_generator extends behat_generator_base {
      * in the course with the given shortname. Its summary should hold the token; give "summary" to
      * set it.
      *
-     * "local_embeddiscussion > posts" and "reactions" name their thread by its name.
+     * "local_embeddiscussion > posts" and "reactions" name their thread by its embedkey.
      *
      * @return array
      */
@@ -52,13 +52,13 @@ class behat_local_embeddiscussion_generator extends behat_generator_base {
             'threads' => [
                 'singular' => 'thread',
                 'datagenerator' => 'thread',
-                'required' => ['activity', 'name', 'embedkey'],
+                'required' => ['activity', 'embedkey'],
                 'switchids' => ['activity' => 'cmid'],
             ],
             'section threads' => [
                 'singular' => 'section thread',
                 'datagenerator' => 'section_thread',
-                'required' => ['course', 'section', 'name', 'embedkey'],
+                'required' => ['course', 'section', 'embedkey'],
                 'switchids' => ['course' => 'courseid'],
             ],
             'posts' => [

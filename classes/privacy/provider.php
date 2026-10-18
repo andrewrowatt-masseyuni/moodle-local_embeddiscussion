@@ -149,13 +149,9 @@ class provider implements core_userlist_provider, metadata_provider, plugin_prov
                     ];
                 }, array_values($posts));
 
-                $threadtitle = trim((string)($thread->name ?? ''));
-                if ($threadtitle === '') {
-                    $threadtitle = 'thread-' . $thread->id;
-                }
-
+                // A context can hold several discussions, which have nothing but their id to tell them apart.
                 writer::with_context($context)->export_data(
-                    [get_string('pluginname', 'local_embeddiscussion'), $threadtitle],
+                    [get_string('pluginname', 'local_embeddiscussion'), 'thread-' . $thread->id],
                     (object)['posts' => $exportposts]
                 );
             }

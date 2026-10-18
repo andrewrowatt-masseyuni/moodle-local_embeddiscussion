@@ -76,15 +76,15 @@ final class external_test extends \externallib_advanced_testcase {
     }
 
     /**
-     * Each token previews as its discussion's name over a skeleton, and never as anything live. A
-     * token with no thread here previews as the page's notice.
+     * Each token previews as a header over a skeleton - its header and composer, without posts - and
+     * never as anything live. A token with no thread here previews as the page's notice.
      */
     public function test_get_previews(): void {
         $course = $this->getDataGenerator()->create_course();
         $page = $this->getDataGenerator()->create_module('page', ['course' => $course->id]);
         $other = $this->getDataGenerator()->create_module('page', ['course' => $course->id]);
-        $thread = $this->generator()->create_thread(['cmid' => $page->cmid, 'name' => 'Q&A "week 1"', 'anonymous' => 1]);
-        $elsewhere = $this->generator()->create_thread(['cmid' => $other->cmid, 'name' => 'Elsewhere']);
+        $thread = $this->generator()->create_thread(['cmid' => $page->cmid, 'anonymous' => 1]);
+        $elsewhere = $this->generator()->create_thread(['cmid' => $other->cmid]);
         $this->setUser($this->getDataGenerator()->create_and_enrol($course, 'editingteacher'));
 
         $previews = $this->previews(\context_module::instance($page->cmid), [
@@ -94,14 +94,16 @@ final class external_test extends \externallib_advanced_testcase {
         ]);
 
         $this->assertCount(2, $previews);
-        $this->assertStringContainsString('Discussion: Q&amp;A &quot;week 1&quot;', $previews[$thread->embedkey]);
+        $this->assertStringContainsString('Embedded discussion', $previews[$thread->embedkey]);
         $this->assertStringContainsString('Anonymous', $previews[$thread->embedkey]);
         $this->assertStringContainsString('embeddisc-skeleton', $previews[$thread->embedkey]);
+        $this->assertStringContainsString('embeddisc-composer', $previews[$thread->embedkey]);
+        $this->assertStringNotContainsString('embeddisc-skeleton-post', $previews[$thread->embedkey]);
         $this->assertStringNotContainsString('data-threadid', $previews[$thread->embedkey]);
         $this->assertStringNotContainsString('data-region="filter-embeddiscussion"', $previews[$thread->embedkey]);
 
         $this->assertStringContainsString('embeddisc-notfound', $previews[$elsewhere->embedkey]);
-        $this->assertStringNotContainsString('Elsewhere', $previews[$elsewhere->embedkey]);
+        $this->assertStringNotContainsString('embeddisc-skeleton', $previews[$elsewhere->embedkey]);
     }
 
     /**
@@ -109,12 +111,12 @@ final class external_test extends \externallib_advanced_testcase {
      */
     public function test_get_previews_in_a_section(): void {
         $course = $this->getDataGenerator()->create_course();
-        $thread = $this->generator()->create_section_thread(['courseid' => $course->id, 'section' => 1, 'name' => 'Week 1']);
+        $thread = $this->generator()->create_section_thread(['courseid' => $course->id, 'section' => 1]);
         $this->setUser($this->getDataGenerator()->create_and_enrol($course, 'editingteacher'));
 
         $previews = $this->previews(\context_course::instance($course->id), [$thread->embedkey], (int)$thread->sectionid);
 
-        $this->assertStringContainsString('Discussion: Week 1', $previews[$thread->embedkey]);
+        $this->assertStringContainsString('embeddisc-skeleton', $previews[$thread->embedkey]);
     }
 
     /**
@@ -123,11 +125,11 @@ final class external_test extends \externallib_advanced_testcase {
      */
     public function test_get_previews_of_drafts_needs_embed(): void {
         $course = $this->getDataGenerator()->create_course();
-        $draft = $this->generator()->create_thread(['courseid' => $course->id, 'name' => 'Draft']);
+        $draft = $this->generator()->create_thread(['courseid' => $course->id]);
         $context = \context_course::instance($course->id);
 
         $this->setUser($this->getDataGenerator()->create_and_enrol($course, 'editingteacher'));
-        $this->assertStringContainsString('Discussion: Draft', $this->previews($context, [$draft->embedkey])[$draft->embedkey]);
+        $this->assertStringContainsString('embeddisc-skeleton', $this->previews($context, [$draft->embedkey])[$draft->embedkey]);
 
         $this->setUser($this->getDataGenerator()->create_and_enrol($course, 'teacher'));
         $this->expectException(\required_capability_exception::class);
@@ -160,11 +162,11 @@ final class external_test extends \externallib_advanced_testcase {
     public function test_get_thread_and_create_post(): void {
         $course = $this->getDataGenerator()->create_course();
         $page = $this->getDataGenerator()->create_module('page', ['course' => $course->id]);
-        $thread = $this->generator()->create_thread(['cmid' => $page->cmid, 'name' => 'Week 1']);
+        $thread = $this->generator()->create_thread(['cmid' => $page->cmid]);
         $this->setUser($this->getDataGenerator()->create_and_enrol($course, 'student'));
 
         $view = external_api::clean_returnvalue(get_thread::execute_returns(), get_thread::execute((int)$thread->id));
-        $this->assertSame('Week 1', $view['name']);
+        $this->assertSame((int)$thread->id, $view['threadid']);
         $this->assertSame(0, $view['postcount']);
         $this->assertTrue($view['canpost']);
 

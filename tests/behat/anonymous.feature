@@ -25,11 +25,11 @@ Feature: Anonymous embedded discussions
       | book      | title     | content                                                                                   | contentformat |
       | Discuss A | Chapter 1 | <div class="embeddiscussion-embed" data-embeddiscussion="0123456789abcde4"></div>        | 1             |
     And the following "local_embeddiscussion > threads" exist:
-      | activity | name          | embedkey         | anonymous |
-      | book1    | Settings demo | 0123456789abcde4 | 1         |
+      | activity | embedkey         | anonymous |
+      | book1    | 0123456789abcde4 | 1         |
     And the following "local_embeddiscussion > posts" exist:
-      | thread        | user     | content              |
-      | Settings demo | student1 | Hello from a student |
+      | thread           | user     | content              |
+      | 0123456789abcde4 | student1 | Hello from a student |
     And I change the window size to "large"
 
   @javascript

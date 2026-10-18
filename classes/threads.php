@@ -112,23 +112,6 @@ class threads {
     }
 
     /**
-     * A thread's name, formatted for output.
-     *
-     * @param \stdClass $row A thread row.
-     * @return string
-     */
-    public static function display_name(\stdClass $row): string {
-        $name = trim((string)($row->name ?? ''));
-        if ($name === '') {
-            return '';
-        }
-
-        $context = \context::instance_by_id((int)$row->contextid, IGNORE_MISSING) ?: \context_system::instance();
-
-        return format_string($name, true, ['context' => $context]);
-    }
-
-    /**
      * Forget what was read for this request.
      */
     public static function reset_cache(): void {

@@ -51,7 +51,7 @@ class local_embeddiscussion_generator extends component_generator_base {
      * activity's or section's text for it to be shown.
      *
      * @param array|stdClass $record Needs cmid, sectionid, or courseid for a draft. Optional: embedkey,
-     *     name, anonymous, handleoffset.
+     *     anonymous, handleoffset.
      * @return stdClass The new row.
      */
     public function create_thread($record): stdClass {
@@ -81,7 +81,6 @@ class local_embeddiscussion_generator extends component_generator_base {
             'cmid' => 0,
             'sectionid' => 0,
             'embedkey' => \local_embeddiscussion\token::new_key(),
-            'name' => 'Discussion ' . $this->threadcount,
             'anonymous' => 0,
             'handleoffset' => 0,
             'timecreated' => $now,
@@ -124,8 +123,8 @@ class local_embeddiscussion_generator extends component_generator_base {
     /**
      * Create a post in an existing thread.
      *
-     * @param array|stdClass $record Needs threadid (or thread, its name), userid and content.
-     *     Optional: courseid (to tell apart threads of the same name), parentid, timecreated.
+     * @param array|stdClass $record Needs threadid (or thread, its key), userid and content.
+     *     Optional: courseid (to tell apart threads with the same key), parentid, timecreated.
      * @return stdClass The new row.
      */
     public function create_post($record): stdClass {
@@ -162,7 +161,7 @@ class local_embeddiscussion_generator extends component_generator_base {
     /**
      * Add an emoji reaction to a post. Adding the same emoji twice does nothing.
      *
-     * @param array|stdClass $record Needs threadid (or thread, its name), userid, emoji, and postid
+     * @param array|stdClass $record Needs threadid (or thread, its key), userid, emoji, and postid
      *     or postcontent (part of the post's text). Optional: courseid.
      */
     public function create_reaction($record): void {
@@ -189,7 +188,10 @@ class local_embeddiscussion_generator extends component_generator_base {
     }
 
     /**
-     * The thread a record is about: by threadid, or by thread (its name), optionally in courseid.
+     * The thread a record is about: by threadid, or by thread (its key), optionally in courseid.
+     *
+     * A key is unique only within its activity, or its course for sections. A key used in more than
+     * one place needs threadid instead, or courseid when the places are in different courses.
      *
      * @param array $record
      * @return stdClass
@@ -204,13 +206,13 @@ class local_embeddiscussion_generator extends component_generator_base {
             throw new coding_exception('Name the thread, by threadid or thread.');
         }
 
-        $params = ['name' => (string)$record['thread']];
+        $params = ['embedkey' => (string)$record['thread']];
         if (!empty($record['courseid'])) {
             $params['courseid'] = (int)$record['courseid'];
         }
         $threads = $DB->get_records(threads::TABLE, $params, 'id');
         if (count($threads) !== 1) {
-            throw new coding_exception('There is not exactly one thread called "' . $record['thread'] . '".');
+            throw new coding_exception('There is not exactly one thread with the key "' . $record['thread'] . '".');
         }
 
         return reset($threads);

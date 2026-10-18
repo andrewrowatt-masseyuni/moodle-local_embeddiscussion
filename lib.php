@@ -23,7 +23,6 @@
  */
 
 use local_embeddiscussion\api;
-use local_embeddiscussion\threads;
 
 /**
  * After any activity is saved through its settings form, adopt the drafts embedded in its text.
@@ -63,33 +62,4 @@ function local_embeddiscussion_coursemodule_edit_post_actions($data, $course) {
  */
 function local_embeddiscussion_pre_course_module_delete($cm) {
     api::delete_for_cm((int)$cm->id);
-}
-
-/**
- * Link the course's list of embedded discussions from the course navigation, when there are any.
- *
- * @param navigation_node $navigation The course navigation node.
- * @param stdClass $course The course.
- * @param context_course $context The course context.
- */
-function local_embeddiscussion_extend_navigation_course($navigation, $course, $context) {
-    global $DB;
-
-    if ((int)$course->id === (int)SITEID || !has_capability('local/embeddiscussion:managethreads', $context)) {
-        return;
-    }
-
-    $select = 'courseid = :courseid AND (cmid > 0 OR sectionid > 0)';
-    if (!$DB->record_exists_select(threads::TABLE, $select, ['courseid' => $course->id])) {
-        return;
-    }
-
-    $navigation->add(
-        get_string('threadsincourse', 'local_embeddiscussion'),
-        new moodle_url('/local/embeddiscussion/index.php', ['courseid' => $course->id]),
-        navigation_node::TYPE_CUSTOM,
-        null,
-        'embeddiscussion_threads',
-        new pix_icon('t/messages', '')
-    );
 }

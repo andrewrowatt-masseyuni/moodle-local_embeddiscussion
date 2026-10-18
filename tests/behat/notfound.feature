@@ -21,8 +21,8 @@ Feature: A discussion copied in from elsewhere
       | page     | C1     | First page | page1    | <p>First</p><div class="embeddiscussion-embed" data-embeddiscussion="0123456789abcde7"></div>  |
       | page     | C1     | Copy page  | page2    | <p>Copied</p><div class="embeddiscussion-embed" data-embeddiscussion="0123456789abcde7"></div> |
     And the following "local_embeddiscussion > threads" exist:
-      | activity | name  | embedkey         |
-      | page1    | First | 0123456789abcde7 |
+      | activity | embedkey         |
+      | page1    | 0123456789abcde7 |
 
   Scenario: A teacher is told the discussion belongs elsewhere
     When I am on the "Copy page" "page activity" page logged in as teacher1

@@ -22,9 +22,9 @@ Feature: Embedded discussions in book chapters
       | b1   | c1    | <div class="embeddiscussion-embed" data-embeddiscussion="0123456789abcde5"></div> | 1             | 1       |
       | b1   | c2    | <div class="embeddiscussion-embed" data-embeddiscussion="0123456789abcde6"></div> | 1             | 2       |
     And the following "local_embeddiscussion > threads" exist:
-      | activity | name    | embedkey         |
-      | book1    | b1 \ c1 | 0123456789abcde5 |
-      | book1    | b1 \ c2 | 0123456789abcde6 |
+      | activity | embedkey         |
+      | book1    | 0123456789abcde5 |
+      | book1    | 0123456789abcde6 |
 
   @javascript
   Scenario: A comment posted in one chapter is not visible in the other chapter

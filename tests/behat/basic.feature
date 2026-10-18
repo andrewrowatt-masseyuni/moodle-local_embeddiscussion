@@ -23,8 +23,8 @@ Feature: Embedded discussion filter
       | book      | title     | content | contentformat |
       | Discuss A | Chapter 1 | <p>Chapter text.</p><div class="embeddiscussion-embed" data-embeddiscussion="0123456789abcde1"></div> | 1 |
     And the following "local_embeddiscussion > threads" exist:
-      | activity | name | embedkey |
-      | book1 | Course 1 Demo | 0123456789abcde1 |
+      | activity | embedkey         |
+      | book1    | 0123456789abcde1 |
 
   @javascript
   Scenario: Plugin appears in the additional plugins list

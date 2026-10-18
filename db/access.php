@@ -27,8 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 $capabilities = [
 
     /*
-     * Who can add an embedded discussion to a piece of text from the editor, and change its name and
-     * whether it is anonymous. A discussion is part of the course's content, so this follows who
+     * Who can add an embedded discussion to a piece of text from the editor, and change whether it is
+     * anonymous. A discussion is part of the course's content, so this follows who
      * writes that content.
      */
     'local/embeddiscussion:embed' => [
@@ -81,14 +81,6 @@ $capabilities = [
     'local/embeddiscussion:deleteanypost' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
-        'archetypes' => [
-            'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW,
-        ],
-    ],
-    'local/embeddiscussion:managethreads' => [
-        'captype' => 'read',
-        'contextlevel' => CONTEXT_COURSE,
         'archetypes' => [
             'editingteacher' => CAP_ALLOW,
             'manager' => CAP_ALLOW,

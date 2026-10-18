@@ -133,13 +133,12 @@ final class api_test extends \advanced_testcase {
         $context = \context_module::instance($page->cmid);
 
         $sink = $this->redirectEvents();
-        $key = api::save_embed($context, null, '  Week 1 questions  ', true);
+        $key = api::save_embed($context, null, true);
         $events = $sink->get_events();
         $sink->close();
 
         $row = api::get_embed($context, $key);
         $this->assertMatchesRegularExpression('/^[0-9a-f]{16}$/', $key);
-        $this->assertSame('Week 1 questions', $row->name);
         $this->assertSame(1, (int)$row->anonymous);
         $this->assertSame((int)$page->cmid, (int)$row->cmid);
         $this->assertSame((int)$context->id, (int)$row->contextid);
@@ -159,17 +158,16 @@ final class api_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
         $page = $this->getDataGenerator()->create_module('page', ['course' => $course->id]);
         $context = \context_module::instance($page->cmid);
-        $thread = $this->generator()->create_thread(['cmid' => $page->cmid, 'name' => 'Old name']);
+        $thread = $this->generator()->create_thread(['cmid' => $page->cmid]);
 
         $sink = $this->redirectEvents();
-        $key = api::save_embed($context, $thread->embedkey, 'New name', true);
+        $key = api::save_embed($context, $thread->embedkey, true);
         $events = $sink->get_events();
         $sink->close();
 
         $this->assertSame($thread->embedkey, $key);
         $row = api::get_embed($context, $key);
         $this->assertSame((int)$thread->id, (int)$row->id);
-        $this->assertSame('New name', $row->name);
         $this->assertSame(1, (int)$row->anonymous);
         $this->assertCount(1, $events);
         $this->assertInstanceOf(event\thread_updated::class, $events[0]);
@@ -183,36 +181,16 @@ final class api_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
         $page1 = $this->getDataGenerator()->create_module('page', ['course' => $course->id]);
         $page2 = $this->getDataGenerator()->create_module('page', ['course' => $course->id]);
-        $theirs = $this->generator()->create_thread(['cmid' => $page1->cmid, 'name' => 'Theirs']);
+        $theirs = $this->generator()->create_thread(['cmid' => $page1->cmid, 'anonymous' => 1]);
         $context = \context_module::instance($page2->cmid);
 
         $this->assertNull(api::get_embed($context, $theirs->embedkey));
 
-        $key = api::save_embed($context, $theirs->embedkey, 'Mine', false);
+        $key = api::save_embed($context, $theirs->embedkey, false);
 
         $this->assertNotSame($theirs->embedkey, $key);
-        $this->assertSame('Mine', api::get_embed($context, $key)->name);
-        $this->assertSame('Theirs', api::get_embed(\context_module::instance($page1->cmid), $theirs->embedkey)->name);
-    }
-
-    /**
-     * A new thread is offered its activity's or section's name, and takes it if saved with none.
-     */
-    public function test_default_name(): void {
-        $course = $this->getDataGenerator()->create_course();
-        $page = $this->getDataGenerator()->create_module('page', ['course' => $course->id, 'name' => 'Reading & notes']);
-        $section = get_fast_modinfo($course)->get_section_info(1);
-        course_update_section($course, $section, ['name' => 'Week one']);
-        $coursecontext = \context_course::instance($course->id);
-        $context = \context_module::instance($page->cmid);
-
-        $this->assertSame('Reading & notes', api::default_name($context));
-        $this->assertSame('Week one', api::default_name($coursecontext, $section->id));
-        // The activity being added has no name yet.
-        $this->assertSame('', api::default_name($coursecontext));
-
-        $this->assertSame('Reading & notes', api::get_embed($context, api::save_embed($context, null, ' ', false))->name);
-        $this->assertSame('Discussion', api::get_embed($coursecontext, api::save_embed($coursecontext, null, '', false))->name);
+        $this->assertSame(0, (int)api::get_embed($context, $key)->anonymous);
+        $this->assertSame(1, (int)api::get_embed(\context_module::instance($page1->cmid), $theirs->embedkey)->anonymous);
     }
 
     /**
@@ -225,11 +203,10 @@ final class api_test extends \advanced_testcase {
 
         $course = $this->getDataGenerator()->create_course();
         $coursecontext = \context_course::instance($course->id);
-        $draft = $this->generator()->create_thread(['courseid' => $course->id, 'name' => 'Draft']);
-        $other = $this->generator()->create_thread(['courseid' => $course->id, 'name' => 'Other draft']);
+        $draft = $this->generator()->create_thread(['courseid' => $course->id]);
+        $other = $this->generator()->create_thread(['courseid' => $course->id]);
         $section = $this->generator()->create_thread([
             'sectionid' => get_fast_modinfo($course)->get_section_info(1)->id,
-            'name' => 'Section',
         ]);
         $this->assertSame((int)$coursecontext->id, (int)$draft->contextid);
 
@@ -255,7 +232,7 @@ final class api_test extends \advanced_testcase {
 
         $this->setAdminUser();
         $course = $this->getDataGenerator()->create_course();
-        $draft = $this->generator()->create_thread(['courseid' => $course->id, 'name' => 'Draft']);
+        $draft = $this->generator()->create_thread(['courseid' => $course->id]);
 
         // The generator saves through add_moduleinfo(), as the form does.
         $label = $this->getDataGenerator()->create_module('label', [
@@ -267,7 +244,7 @@ final class api_test extends \advanced_testcase {
     }
 
     /**
-     * Duplicating a section gives the copy a thread of its own - same name and anonymity, no posts -
+     * Duplicating a section gives the copy a thread of its own - same anonymity, no posts -
      * and its summary the new key.
      */
     public function test_duplicating_a_section(): void {
@@ -279,7 +256,6 @@ final class api_test extends \advanced_testcase {
         $original = $this->generator()->create_section_thread([
             'courseid' => $course->id,
             'section' => 1,
-            'name' => 'Week 1',
             'anonymous' => 1,
         ]);
         $sectioninfo = get_fast_modinfo($course)->get_section_info(1);
@@ -296,7 +272,6 @@ final class api_test extends \advanced_testcase {
 
         $claimed = $DB->get_record(threads::TABLE, ['embedkey' => $keys[0]]);
         $this->assertSame((int)$copy->id, (int)$claimed->sectionid);
-        $this->assertSame('Week 1', $claimed->name);
         $this->assertSame(1, (int)$claimed->anonymous);
         $this->assertFalse($DB->record_exists('local_embeddiscussion_post', ['threadid' => $claimed->id]));
 

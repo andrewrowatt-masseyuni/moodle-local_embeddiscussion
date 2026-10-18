@@ -74,23 +74,25 @@ final class embed_form_test extends \advanced_testcase {
     }
 
     /**
-     * A new discussion is offered its activity's name, and saving makes it.
+     * A new discussion is offered as not anonymous, with the help written out, and saving makes it.
      */
     public function test_embedding_a_new_discussion(): void {
         $course = $this->getDataGenerator()->create_course();
-        $page = $this->getDataGenerator()->create_module('page', ['course' => $course->id, 'name' => 'Reading']);
+        $page = $this->getDataGenerator()->create_module('page', ['course' => $course->id]);
         $context = \context_module::instance($page->cmid);
         $this->setUser($this->getDataGenerator()->create_and_enrol($course, 'editingteacher'));
 
-        $this->assertMatchesRegularExpression('~name="name"[^>]*value="Reading"~', $this->open(['contextid' => $context->id]));
+        $html = $this->open(['contextid' => $context->id]);
+        $this->assertMatchesRegularExpression('~<select[^>]*name="anonymous"~', $html);
+        $this->assertMatchesRegularExpression('~<option value="0" selected~', $html);
+        $this->assertStringContainsString(get_string('anonymous_inlinehelp', 'local_embeddiscussion'), $html);
+        $this->assertStringNotContainsString('name="name"', $html);
 
-        $result = $this->submit(['contextid' => $context->id, 'sectionid' => 0, 'key' => '', 'name' => 'Week 1',
-            'anonymous' => 1]);
+        $result = $this->submit(['contextid' => $context->id, 'sectionid' => 0, 'key' => '', 'anonymous' => 1]);
 
         $this->assertTrue($result['submitted']);
         $key = json_decode($result['data'])->key;
         $row = api::get_embed($context, $key);
-        $this->assertSame('Week 1', $row->name);
         $this->assertSame(1, (int)$row->anonymous);
     }
 
@@ -102,32 +104,18 @@ final class embed_form_test extends \advanced_testcase {
         $page = $this->getDataGenerator()->create_module('page', ['course' => $course->id]);
         $context = \context_module::instance($page->cmid);
         $thread = $this->getDataGenerator()->get_plugin_generator('local_embeddiscussion')
-            ->create_thread(['cmid' => $page->cmid, 'name' => 'Old', 'anonymous' => 1]);
+            ->create_thread(['cmid' => $page->cmid, 'anonymous' => 1]);
         $this->setUser($this->getDataGenerator()->create_and_enrol($course, 'editingteacher'));
 
+        $html = $this->open(['contextid' => $context->id, 'key' => $thread->embedkey]);
+        $this->assertMatchesRegularExpression('~<option value="1" selected~', $html);
+
         $result = $this->submit(['contextid' => $context->id, 'sectionid' => 0, 'key' => $thread->embedkey,
-            'name' => 'New', 'anonymous' => 0]);
+            'anonymous' => 0]);
 
         $this->assertSame($thread->embedkey, json_decode($result['data'])->key);
         $row = api::get_embed($context, $thread->embedkey);
-        $this->assertSame('New', $row->name);
         $this->assertSame(0, (int)$row->anonymous);
-    }
-
-    /**
-     * A name is required.
-     */
-    public function test_name_is_required(): void {
-        $course = $this->getDataGenerator()->create_course();
-        $page = $this->getDataGenerator()->create_module('page', ['course' => $course->id]);
-        $context = \context_module::instance($page->cmid);
-        $this->setUser($this->getDataGenerator()->create_and_enrol($course, 'editingteacher'));
-
-        $result = $this->submit(['contextid' => $context->id, 'sectionid' => 0, 'key' => '', 'name' => '  ',
-            'anonymous' => 0]);
-
-        $this->assertFalse($result['submitted']);
-        $this->assertSame([], threads::for_cm($course->id, $page->cmid));
     }
 
     /**
@@ -140,6 +128,6 @@ final class embed_form_test extends \advanced_testcase {
         $this->setUser($this->getDataGenerator()->create_and_enrol($course, 'teacher'));
 
         $this->expectException(\required_capability_exception::class);
-        $this->submit(['contextid' => $context->id, 'sectionid' => 0, 'key' => '', 'name' => 'Week 1', 'anonymous' => 0]);
+        $this->submit(['contextid' => $context->id, 'sectionid' => 0, 'key' => '', 'anonymous' => 0]);
     }
 }

@@ -20,7 +20,7 @@ use core_form\dynamic_form;
 use local_embeddiscussion\api;
 
 /**
- * Set up one embedded discussion: its name, and whether it is anonymous.
+ * Set up one embedded discussion: whether it is anonymous.
  *
  * Opened by tiny_embeddiscussion in a modal, to embed a new discussion or change one already in the
  * text. Saving makes or updates the thread straight away; the editor then puts its token in the text.
@@ -106,50 +106,38 @@ class embed_form extends dynamic_form {
         $mform->addElement('hidden', 'key');
         $mform->setType('key', PARAM_ALPHANUM);
 
-        $mform->addElement('text', 'name', get_string('name', 'local_embeddiscussion'), ['size' => 60]);
-        $mform->setType('name', PARAM_TEXT);
-        $mform->addRule('name', null, 'required', null, 'client');
-        $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
-        $mform->addHelpButton('name', 'name', 'local_embeddiscussion');
-
-        $mform->addElement(
-            'advcheckbox',
-            'anonymous',
+        $label = $this->label_with_help(
             get_string('anonymous', 'local_embeddiscussion'),
-            get_string('anonymous_label', 'local_embeddiscussion')
+            get_string('anonymous_inlinehelp', 'local_embeddiscussion')
         );
-        $mform->addHelpButton('anonymous', 'anonymous', 'local_embeddiscussion');
+        $mform->addElement('selectyesno', 'anonymous', $label);
+        $mform->setDefault('anonymous', 0);
     }
 
     /**
-     * Validation.
+     * A field's label, with its help written under it.
      *
-     * @param array $data The submitted data.
-     * @param array $files The submitted files.
-     * @return array Errors, keyed by element name.
+     * The help is under the label rather than behind a help button, so it is read without a
+     * click. Behat therefore finds such a field by its name, not its label.
+     *
+     * @param string $label The label.
+     * @param string $help The help.
+     * @return string
      */
-    public function validation($data, $files) {
-        $errors = parent::validation($data, $files);
-
-        if (trim((string)($data['name'] ?? '')) === '') {
-            $errors['name'] = get_string('required');
-        }
-
-        return $errors;
+    protected function label_with_help(string $label, string $help): string {
+        return $label . \html_writer::span($help, 'd-block small text-muted font-weight-normal mb-1');
     }
 
     /**
-     * Load the thread being changed, or offer a name for a new one.
+     * Load the thread being changed.
      */
     public function set_data_for_dynamic_submission(): void {
-        $context = $this->get_context_for_dynamic_submission();
         $row = $this->get_row();
 
         $this->set_data([
-            'contextid' => $context->id,
+            'contextid' => $this->get_context_for_dynamic_submission()->id,
             'sectionid' => $this->get_sectionid(),
             'key' => $row ? $row->embedkey : '',
-            'name' => $row ? $row->name : api::default_name($context, $this->get_sectionid()),
             'anonymous' => $row ? (int)$row->anonymous : 0,
         ]);
     }
@@ -165,7 +153,6 @@ class embed_form extends dynamic_form {
         $key = api::save_embed(
             $this->get_context_for_dynamic_submission(),
             $data->key !== '' ? $data->key : null,
-            (string)$data->name,
             !empty($data->anonymous),
             $this->get_sectionid()
         );

@@ -60,7 +60,7 @@ final class provider_test extends provider_testcase {
         $this->context = \context_module::instance($page->cmid);
         $this->student = $this->getDataGenerator()->create_and_enrol($this->course, 'student');
         $this->reactor = $this->getDataGenerator()->create_and_enrol($this->course, 'student');
-        $this->thread = $generator->create_thread(['cmid' => $page->cmid, 'name' => 'Week 1', 'anonymous' => 1]);
+        $this->thread = $generator->create_thread(['cmid' => $page->cmid, 'anonymous' => 1]);
         $post = $generator->create_post(['threadid' => $this->thread->id, 'userid' => $this->student->id,
             'content' => 'My thoughts']);
         $generator->create_reaction(['threadid' => $this->thread->id, 'userid' => $this->reactor->id,
@@ -81,12 +81,15 @@ final class provider_test extends provider_testcase {
     }
 
     /**
-     * A poster's posts are exported under the discussion's name.
+     * A poster's posts are exported under the discussion's id.
      */
     public function test_export_user_data(): void {
         $this->export_context_data_for_user($this->student->id, $this->context, 'local_embeddiscussion');
 
-        $data = writer::with_context($this->context)->get_data([get_string('pluginname', 'local_embeddiscussion'), 'Week 1']);
+        $data = writer::with_context($this->context)->get_data([
+            get_string('pluginname', 'local_embeddiscussion'),
+            'thread-' . $this->thread->id,
+        ]);
         $this->assertCount(1, $data->posts);
         $this->assertStringContainsString('My thoughts', $data->posts[0]['content']);
     }

@@ -493,7 +493,6 @@ class manager {
 
         return [
             'threadid' => (int)$thread->id,
-            'name' => threads::display_name($thread),
             'anonymous' => (bool)$thread->anonymous,
             'currentuserisanonymous' => $currentuserisanonymous,
             'canpost' => $canpost,

@@ -17,7 +17,6 @@
 namespace local_embeddiscussion\output;
 
 use local_embeddiscussion\manager;
-use local_embeddiscussion\threads;
 
 /**
  * What an embedded discussion's token becomes: on the page, a placeholder the discussion loads into;
@@ -70,8 +69,8 @@ class embed {
     }
 
     /**
-     * A token as the editor previews it: a header naming the discussion over its skeleton, or - for a
-     * token with no thread in the editor's context - the notice the page will show there.
+     * A token as the editor previews it: a header over the discussion's skeleton, or - for a token
+     * with no thread in the editor's context - the notice the page will show there.
      *
      * Never live: nothing in the editor loads a discussion, for anyone.
      *
@@ -86,8 +85,6 @@ class embed {
         }
 
         return $OUTPUT->render_from_template('local_embeddiscussion/preview', [
-            // Unescaped: the template escapes it.
-            'name' => format_string($row->name, true, ['context' => threads::context_for($row), 'escape' => false]),
             'anonymous' => (bool)$row->anonymous,
         ]);
     }

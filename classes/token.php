@@ -20,9 +20,9 @@ namespace local_embeddiscussion;
  * The opaque token that marks where an embedded discussion sits in rich text.
  *
  * The token is an empty element: <div class="embeddiscussion-embed" data-embeddiscussion="KEY"></div>.
- * It names a thread in local_embeddiscussion_thread and carries nothing else - not its name, not
- * whether it is anonymous. Those are the thread's, set from the editor, so a teacher changes them in
- * one place and copying the text can never quietly change them. Where the filter does not run, the
+ * It names a thread in local_embeddiscussion_thread and carries nothing else - not even whether it
+ * is anonymous. That is the thread's, set from the editor, so a teacher changes it in one place and
+ * copying the text can never quietly change it. Where the filter does not run, the
  * token renders as nothing (styles.css hides it, since TinyMCE pads an empty div with &nbsp;).
  *
  * @package    local_embeddiscussion

@@ -125,7 +125,6 @@ final class backup_test extends \advanced_testcase {
         $thread = $this->generator()->create_thread([
             'cmid' => $page->cmid,
             'embedkey' => $key,
-            'name' => 'Week 1',
             'anonymous' => 1,
             'handleoffset' => 3,
         ]);
@@ -153,7 +152,6 @@ final class backup_test extends \advanced_testcase {
         $newcm = array_values(get_fast_modinfo($newcourseid)->get_instances_of('page'))[0];
         $restored = $DB->get_record(threads::TABLE, ['cmid' => $newcm->id], '*', MUST_EXIST);
         $this->assertSame($thread->embedkey, $restored->embedkey);
-        $this->assertSame('Week 1', $restored->name);
         $this->assertSame(1, (int)$restored->anonymous);
         $this->assertSame(3, (int)$restored->handleoffset);
         $this->assertSame((int)$newcourseid, (int)$restored->courseid);
@@ -191,7 +189,6 @@ final class backup_test extends \advanced_testcase {
         $newcm = array_values(get_fast_modinfo($newcourseid)->get_instances_of('page'))[0];
         $restored = $DB->get_record(threads::TABLE, ['cmid' => $newcm->id], '*', MUST_EXIST);
         $this->assertSame($thread->embedkey, $restored->embedkey);
-        $this->assertSame('Week 1', $restored->name);
         $this->assertFalse($DB->record_exists('local_embeddiscussion_post', ['threadid' => $restored->id]));
         $this->assertFalse($DB->record_exists('local_embeddiscussion_handle', ['threadid' => $restored->id]));
     }
@@ -209,7 +206,6 @@ final class backup_test extends \advanced_testcase {
 
         $copy = $DB->get_record(threads::TABLE, ['cmid' => $newcm->id], '*', MUST_EXIST);
         $this->assertSame($thread->embedkey, $copy->embedkey);
-        $this->assertSame('Week 1', $copy->name);
         $this->assertFalse($DB->record_exists('local_embeddiscussion_post', ['threadid' => $copy->id]));
         $this->assertSame([$thread->embedkey], token::keys_in($DB->get_field('page', 'content', ['id' => $newcm->instance])));
     }
@@ -227,7 +223,6 @@ final class backup_test extends \advanced_testcase {
             'courseid' => $course->id,
             'section' => 1,
             'embedkey' => $key,
-            'name' => 'Week 1',
             'summary' => token::html($key),
         ]);
         $this->generator()->create_post(['threadid' => $thread->id, 'userid' => $student->id, 'content' => 'Hello']);

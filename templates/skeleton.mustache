@@ -23,6 +23,9 @@
     Shown on the page until the discussion loads, so that the page does not reflow when it does,
     and in the editor in place of the discussion, which is never live there.
 
+    Blocks:
+    * posts The post and its reply. The editor's preview leaves them out (see preview).
+
     Example context (json): {}
 }}
 <div class="embeddisc embeddisc-skeleton" aria-hidden="true">
@@ -46,6 +49,7 @@
     </div>
   </div>
 
+  {{$posts}}
   <div class="embeddisc-skeleton-post">
     <div class="embeddisc-skeleton-block embeddisc-skeleton-avatar"></div>
     <div class="embeddisc-skeleton-post-body">
@@ -78,6 +82,7 @@
       </div>
     </div>
   </div>
+  {{/posts}}
 
   <div class="sr-only">{{#str}}loadingdiscussion, local_embeddiscussion{{/str}}</div>
 </div>

@@ -17,25 +17,24 @@
 {{!
     @template local_embeddiscussion/preview
 
-    An embedded discussion as the editor shows it: a header naming it, over its skeleton. Never live
-    in the editor, for anyone - there is nothing to click inside it but the whole, which opens the
-    discussion's settings for a teacher who may change them.
+    An embedded discussion as the editor shows it: a header, over its skeleton's header and composer,
+    without the skeleton's posts. Never live in the editor, for anyone - there is nothing to click
+    inside it but the whole, which opens the discussion's settings for a teacher who may change them.
 
     Context variables required for this template:
-    * name (string) The discussion's name, formatted.
     * anonymous (bool) Whether the discussion is anonymous.
 
     Example context (json):
     {
-        "name": "Week 1 questions",
         "anonymous": true
     }
 }}
 <div class="embeddisc-preview">
   <div class="embeddisc-preview-header">
-    <span class="embeddisc-preview-icon" aria-hidden="true">{{#pix}}t/messages, core{{/pix}}</span>
-    <span class="embeddisc-preview-title">{{#str}}previewtitle, local_embeddiscussion, {{name}}{{/str}}</span>
+    {{! The editor button's own icon: only tiny_embeddiscussion shows a preview. }}
+    <span class="embeddisc-preview-icon" aria-hidden="true">{{#pix}}icon, tiny_embeddiscussion{{/pix}}</span>
+    <span class="embeddisc-preview-title">{{#str}}pluginname, local_embeddiscussion{{/str}}</span>
     {{#anonymous}}<span class="badge badge-secondary embeddisc-preview-badge">{{#str}}anonymous, local_embeddiscussion{{/str}}</span>{{/anonymous}}
   </div>
-  {{> local_embeddiscussion/skeleton }}
+  {{< local_embeddiscussion/skeleton }}{{$posts}}{{/posts}}{{/ local_embeddiscussion/skeleton }}
 </div>

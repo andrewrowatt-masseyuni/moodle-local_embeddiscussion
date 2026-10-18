@@ -89,8 +89,8 @@ The filter and the button call into this plugin's classes directly. Both check
 ### The token and how a discussion is made and shown
 
 The text holds only `<div class="embeddiscussion-embed" data-embeddiscussion="<16 hex>"></div>`. The
-key names a row in `local_embeddiscussion_thread`. The thread's name and anonymity live on that row,
-never in the text. The token format is defined in two places, which must stay in step:
+key names a row in `local_embeddiscussion_thread`. The thread's settings (only whether it is
+anonymous) live on that row, never in the text. The token format is defined in two places, which must stay in step:
 `classes/token.php` here (PHP `PATTERN`, `html()`, `replace()`, `rekey()`) and the tiny plugin's
 `amd/src/common.js` (JS `tokenSelector`, `keyPattern`).
 
@@ -111,7 +111,8 @@ never in the text. The token format is defined in two places, which must stay in
 4. **Preview (editor JS):** `tiny_embeddiscussion/previews` fetches every token's preview at once from
    `local_embeddiscussion_get_previews` (`output\embed::render_preview()`). It puts each preview in a
    **shadow root** on the token, adds a serializer filter, and uses a `MutationObserver`.
-   `tiny_embeddiscussion/move` provides the up/down buttons.
+   `tiny_embeddiscussion/move` provides the buttons beside it: move up/down, and insert an empty
+   paragraph above/after (the only way to write next to a discussion at either end of the text).
 
 ### Class responsibilities in this plugin
 
@@ -122,7 +123,7 @@ never in the text. The token format is defined in two places, which must stay in
 - `threads`: the per-request, course-wide cache of thread rows. `reset_cache()` must follow any write
   to the thread table. `api` and restore already call it, and tests call it in `setUp()`.
 - `handles` / `identicon`: stable anonymous handles ("Bright Ibis") and avatars.
-- Lifecycle wiring: `lib.php` (module edit/delete callbacks, course navigation), `hook_callbacks`
+- Lifecycle wiring: `lib.php` (module edit/delete callbacks), `hook_callbacks`
   (`before_course_deleted`), `observer` (section updated/deleted, course content deleted), and
   `backup/moodle2/`.
 
@@ -152,7 +153,11 @@ The PHPUnit generator is `tests/generator/lib.php`, and the Behat generator
 matching token into the activity's text yourself. XPath cannot see into the editor's shadow-root
 preview, so use the tiny plugin's `behat_tiny_embeddiscussion` steps (`... TinyMCE editor should
 preview discussion "..."`, `... should save / should not save "..."`, `I move the embedded discussion
-"up" ...`).
+"up" ...`, `I insert space "above" the embedded discussion ...`). Those buttons are clicked with the
+pointer, over the discussion first, because they take no clicks until it is hovered. **To type after
+inserting space, use `I type "..." in the "..." TinyMCE editor`**: core's `I type "..."` sends keys to
+the page, and once the editor has taken focus from script Chrome delivers them without inserting any
+text.
 
 ## Conventions
 

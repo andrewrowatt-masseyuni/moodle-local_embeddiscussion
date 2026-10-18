@@ -73,7 +73,6 @@ class backup_local_embeddiscussion_plugin extends backup_local_plugin {
         $threads = new backup_nested_element('threads');
         $thread = new backup_nested_element('thread', ['id'], [
             'embedkey',
-            'name',
             'anonymous',
             'handleoffset',
             'timecreated',

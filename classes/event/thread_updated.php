@@ -62,7 +62,6 @@ class thread_updated extends \core\event\base {
         return self::create([
             'objectid' => $thread->id,
             'context' => $context,
-            'other' => ['name' => $thread->name],
         ]);
     }
 
